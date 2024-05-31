@@ -109,4 +109,15 @@ class UserController {
             updatedUser.lastName)
     }
 
+    @DeleteMapping("/{userId}")
+    suspend fun deleteUser(
+        @PathVariable userId: Int
+    ) {
+        val existingUser = userRepository.findById(userId).awaitFirstOrElse {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "user #$userId does not found")
+        }
+
+        userRepository.deleteById(userId).subscribe()
+    }
+
 }
